@@ -1,0 +1,89 @@
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+  </head>
+  <body>
+    <section class="text-center">
+      <div class="container ">
+        <h1>Dự đoán topic bài báo</h1>
+        <form method="post" action="#" style="width: 60%; margin: 0 20%">
+          {% csrf_token %}
+          <textarea
+            type="text"
+            id="url"
+            name="url"
+            class="form-control form-form-control-sm"
+            placeholder="Nhập url..."
+            rows="4"
+          ></textarea>
+          <button type="submit" class="btn btn-primary mt-1">Dự đoán</button>
+        </form>
+      </div>
+    </section>
+    <section>
+      <div class="container">
+        <div class="row text-center">
+          {% if check %} {% for res in responseData %}
+          <div class="col-md-12 col-lg-6">
+            <a class="block__16443 text-center d-block">
+              <span class="custom-icon mx-auto"
+                ><span class="icon-paint-brush d-block"></span
+              ></span>
+              <h6 class="text-info">
+                <a href="{{ res.1 }}">{{ res.1 }}</a>
+              </h6>
+              <canvas id="{{ res.1 }}" width="400" height="400"></canvas>
+            </a>
+          </div>
+          {% endfor %} {% endif %}
+        </div>
+      </div>
+    </section>
+    <script>
+      response = {{ responseData | safe }}
+			response.forEach(res => {res[0][1] = res[0][1].map(m => m * 100)})
+      response.forEach((res) => draw_chart(res[0], res[1]));
+      function draw_chart(dataInfected, id) {
+				var data = {
+            labels: dataInfected[0],
+            datasets: [
+              {
+                data: dataInfected[1],
+              },
+            ],
+				}
+        var ctx = document.getElementById(id).getContext("2d");
+        new Chart(ctx).Bar(data);
+      }
+    </script>
+
+    <!-- SCRIPTS -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
